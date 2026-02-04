@@ -48,7 +48,7 @@ public class Bootstrap {
     private static final Logger LOG = LoggerFactory.getLogger(Bootstrap.class);
 
     public static void main(String... a) {
-        final LinkedList<String> args = new LinkedList(Arrays.asList(a));
+        final LinkedList<String> args = new LinkedList<>(Arrays.asList(a));
 
         if (args.isEmpty() || args.get(0).isBlank() || args.contains("-h") || args.contains("--help")) {
             System.err.println("Use: 'producer [TOPIC [P]]' or 'consumer [TOPIC [GROUP]]'");
@@ -172,7 +172,7 @@ public class Bootstrap {
     private static void measurementProducer(Queue<String> args) {
         String topic = args.isEmpty() ? MEASUREMENTS_TOPIC : args.remove();
         Integer partition = args.isEmpty() ? null : Integer.parseInt(args.remove());
-        jsonProducer(topic, partition, Measurements.delayedInfiniteEventSupplier(), m -> m.deviceId());
+        jsonProducer(topic, partition, Measurements.delayedInfiniteEventSupplier(), Measurements.SensorEvent::deviceId);
     }
 
     private static void measurementProduceFinite(Queue<String> args) {
@@ -182,7 +182,7 @@ public class Bootstrap {
         Integer n = Integer.parseInt(args.remove());
         String topic = args.isEmpty() ? MEASUREMENTS_TOPIC : args.remove();
         Integer partition = args.isEmpty() ? null : Integer.parseInt(args.remove());
-        jsonProducer(topic, partition, Measurements.eventSupplier(n), m -> m.deviceId());
+        jsonProducer(topic, partition, Measurements.eventSupplier(n), Measurements.SensorEvent::deviceId);
     }
 
     private static void measurementConsumer(Queue<String> args) {
